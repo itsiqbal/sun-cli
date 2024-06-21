@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/itsiqbal/sun-cli/cmd/info"
+	"github.com/itsiqbal/sun-cli/cmd/open"
 	"github.com/spf13/cobra"
 )
 
@@ -36,6 +37,7 @@ func Execute() {
 
 func addSubCommandPallets () {
 	rootCmd.AddCommand(info.InfoCmd)
+	rootCmd.AddCommand(open.OpenCmd)
 }
 
 func init() {
