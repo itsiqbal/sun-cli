@@ -4,9 +4,13 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package open
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"os"
 	"os/exec"
+	"strconv"
 
 	"github.com/spf13/cobra"
 )
@@ -18,18 +22,18 @@ var (
 func calculateBasePath(dir string) string{
 	result := "~/Desktop/projects/"
 	if( dir == "work"){
-		result = "~/Desktop/projects/awesomeAirasia/"
+		result = "/Users/aauser/Desktop/projects/awesomeAirasia"
 	}
 
 	if( dir == "iqbal"){
-		result = "~/Desktop/projects/awesomeIqbal/"
+		result = "/Users/aauser/Desktop/projects/awesomeIqbal/"
 	}
 
 	return result;
 }
 
 // ListDirectories lists directories in the given path
-func ListDirectories(path string) ([]string, error) {
+func listDirectories(path string) ([]string, error) {
     var directories []string
     files, err := ioutil.ReadDir(path)
     if err != nil {
@@ -44,7 +48,7 @@ func ListDirectories(path string) ([]string, error) {
 }
 
 // OpenInVSCode opens the specified directory in VSCode
-func OpenInVSCode(dir string) error {
+func openInVSCode(dir string) error {
     cmd := exec.Command("code", dir)
     return cmd.Start()
 }
@@ -59,9 +63,51 @@ var OpenCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		basePath := calculateBasePath(dir)
 
-		fmt.Println(basePath)
+		directories, err := listDirectories(basePath)
 
-		// cmd.Help()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if len(directories) == 0 {
+			fmt.Println("No directories found.")
+			return
+		}
+
+		for {
+			fmt.Println("Select a directory to open in VSCode:")
+			for i, dir := range directories {
+				fmt.Printf("%d => %s\n", i+1, dir)
+			}
+			
+			reader := bufio.NewReader(os.Stdin)
+			fmt.Print("Enter the number of the directory: ")
+			input, _ := reader.ReadString('\n')
+			selection, err := strconv.Atoi(input[:len(input)-1])
+			if err != nil || selection < 1 || selection > len(directories) {
+				if(selection == 99){
+					break
+				}else{
+					fmt.Println("Invalid selection")
+				}
+				return
+			}
+			selectedDir := directories[selection-1]
+			fmt.Println(selectedDir)
+			// err = openInVSCode(filepath.Join(path, selectedDir))
+			// if err != nil {
+			// 	log.Fatal(err)
+			// }
+			// fmt.Printf("Opening %s in VSCode...\n", selectedDir)
+			
+
+			// if number == 99 {     // Condition to exit the loop
+			// 	break
+			// }
+		}
+		
+
+		cmd.Help()
 	},
 }
 

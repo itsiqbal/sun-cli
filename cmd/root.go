@@ -6,6 +6,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/itsiqbal/sun-cli/cmd/ai"
 	"github.com/itsiqbal/sun-cli/cmd/info"
 	"github.com/itsiqbal/sun-cli/cmd/open"
 	"github.com/spf13/cobra"
@@ -38,6 +39,7 @@ func Execute() {
 func addSubCommandPallets () {
 	rootCmd.AddCommand(info.InfoCmd)
 	rootCmd.AddCommand(open.OpenCmd)
+	rootCmd.AddCommand(ai.AiCmd)
 }
 
 func init() {
