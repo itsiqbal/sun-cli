@@ -1,3 +1,5 @@
 sun-cli
 /sun-cli
 hello
+/dist
+.vscode/

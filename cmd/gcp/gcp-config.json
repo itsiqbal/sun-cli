@@ -1,0 +1,130 @@
+{
+    "projects": [
+        {
+            "name": "OMS",
+            "id": "airasia-oms",
+            "environments": [
+                "prd",
+                "ppd",
+                "stg",
+                "dev"
+            ]
+        },
+        {
+            "name": "Avalon",
+            "id": "airasia-avalon",
+            "environments": [
+                "prd",
+                "ppd",
+                "stg",
+                "dev"
+            ]
+        }
+    ],
+    "services": [
+        {
+            "name": "🧩 Kubernetes Workloads",
+            "path": "kubernetes/workload"
+        },
+        {
+            "name": "🗄 Cloud SQL (MySQL/PostgreSQL)",
+            "path": "sql/instances"
+        },
+        {
+            "name": "📜 Logs Explorer",
+            "path": "logs/query"
+        },
+        {
+            "name": "📊 Monitoring Dashboards",
+            "path": "monitoring/dashboards"
+        },
+        {
+            "name": "💾 Memorystore (Redis/Memcached)",
+            "path": "redis/instances"
+        },
+        {
+            "name": "📦 Cloud Storage",
+            "path": "storage/browser"
+        },
+        {
+            "name": "🚀 Cloud Run",
+            "path": "run"
+        },
+        {
+            "name": "⚡ Cloud Functions",
+            "path": "functions/list"
+        },
+        {
+            "name": "🔑 IAM & Admin",
+            "path": "iam-admin/iam"
+        },
+        {
+            "name": "🖥 Compute Engine",
+            "path": "compute/instances"
+        },
+        {
+            "name": "🗄 BigQuery",
+            "path": "bigquery"
+        },
+        {
+            "name": "📦 Artifact Registry",
+            "path": "artifact-registry/repositories"
+        },
+        {
+            "name": "📡 Cloud Pub/Sub",
+            "path": "cloudpubsub/subscriptions"
+        },
+        {
+            "name": "🧪 Cloud Tasks",
+            "path": "cloudtasks"
+        },
+        {
+            "name": "🛡 Security Command Center",
+            "path": "security/command-center"
+        },
+        {
+            "name": "🧠 AI Platform / Vertex AI",
+            "path": "vertex-ai"
+        },
+        {
+            "name": "💡 App Engine",
+            "path": "appengine"
+        },
+        {
+            "name": "🔍 Cloud Trace / Profiler",
+            "path": "trace"
+        },
+        {
+            "name": "⚙️ Cloud Build",
+            "path": "cloudbuild/builds"
+        },
+        {
+            "name": "🌐 Cloud DNS",
+            "path": "dns/zones"
+        },
+        {
+            "name": "📈 Cloud Monitoring Metrics",
+            "path": "monitoring/metrics"
+        },
+        {
+            "name": "🩺 Cloud Monitoring Alerts",
+            "path": "monitoring/alerts"
+        },
+        {
+            "name": "💽 Cloud Profiler",
+            "path": "profiler"
+        },
+        {
+            "name": "🐞 Cloud Debugger",
+            "path": "debugger"
+        },
+        {
+            "name": "📊 Cloud Logging Metrics",
+            "path": "logging/metrics"
+        },
+        {
+            "name": "🔔 Incident Response / Ops",
+            "path": "operations/incident-management"
+        }
+    ]
+}

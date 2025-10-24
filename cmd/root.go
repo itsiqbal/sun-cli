@@ -7,6 +7,8 @@ import (
 	"os"
 
 	"github.com/itsiqbal/sun-cli/cmd/ai"
+	"github.com/itsiqbal/sun-cli/cmd/encrypt"
+	"github.com/itsiqbal/sun-cli/cmd/gcp"
 	"github.com/itsiqbal/sun-cli/cmd/info"
 	"github.com/itsiqbal/sun-cli/cmd/open"
 	"github.com/spf13/cobra"
@@ -14,7 +16,7 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "sun-cli",
+	Use:   "sun",
 	Short: "A brief description of your application",
 	Long: `A longer description that spans multiple lines and likely contains
 examples and usage of using your application. For example:
@@ -36,10 +38,12 @@ func Execute() {
 	}
 }
 
-func addSubCommandPallets () {
+func addSubCommandPallets() {
 	rootCmd.AddCommand(info.InfoCmd)
 	rootCmd.AddCommand(open.OpenCmd)
 	rootCmd.AddCommand(ai.AiCmd)
+	rootCmd.AddCommand(encrypt.EncryptCmd)
+	rootCmd.AddCommand(gcp.GcpCmd)
 }
 
 func init() {
@@ -54,5 +58,3 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	addSubCommandPallets()
 }
-
-
