@@ -153,9 +153,9 @@ coverage: test
 
 ## lint: Run linters (requires golangci-lint)
 lint:
-	@echo "🔍 Running linters..."
+	@echo "🔍 Running linters with autofix..."
 	@if command -v golangci-lint >/dev/null 2>&1; then \
-		golangci-lint run ./...; \
+		golangci-lint run --fix ./...; \
 	else \
 		echo "⚠️  golangci-lint not installed. Run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $$(go env GOPATH)/bin"; \
 	fi

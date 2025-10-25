@@ -6,26 +6,24 @@ package ai
 import (
 	"bytes"
 	"fmt"
+	"github.com/spf13/cobra"
 	"net/http"
 	"time"
-	"github.com/spf13/cobra"
 )
 
 var (
 	prompt string
 )
 
-
-
 // infoCmd represents the info command
 var AiCmd = &cobra.Command{
 	Use:   "ai",
 	Short: "A command pallet related to ai searches",
-	Long: ``,
+	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(prompt)
 		url := "http://localhost:11434/api/chat"
-	jsonData := []byte(fmt.Sprintf(`{
+		jsonData := []byte(fmt.Sprintf(`{
 		"model": "llama3",
 		"messages": [
 			{
@@ -36,39 +34,39 @@ var AiCmd = &cobra.Command{
 		"stream": false
 	}`, prompt))
 
-	// Create a new HTTP request
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
-	if err != nil {
-		fmt.Println("Error creating request:", err)
-		return
-	}
+		// Create a new HTTP request
+		req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+		if err != nil {
+			fmt.Println("Error creating request:", err)
+			return
+		}
 
-	// Set the Content-Type header to application/json
-	req.Header.Set("Content-Type", "application/json")
+		// Set the Content-Type header to application/json
+		req.Header.Set("Content-Type", "application/json")
 
-	// Create an HTTP client and set a timeout
-	client := &http.Client{Timeout: time.Second * 10}
+		// Create an HTTP client and set a timeout
+		client := &http.Client{Timeout: time.Second * 10}
 
-	// Send the HTTP request
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Error making request:", err)
-		return
-	}
-	defer resp.Body.Close()
+		// Send the HTTP request
+		resp, err := client.Do(req)
+		if err != nil {
+			fmt.Println("Error making request:", err)
+			return
+		}
+		defer resp.Body.Close()
 
-	// Read and print the response
-	fmt.Printf("Response status: %s\n", resp.Status)
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(resp.Body)
-	fmt.Printf("Response body: %s\n", buf.String())
+		// Read and print the response
+		fmt.Printf("Response status: %s\n", resp.Status)
+		buf := new(bytes.Buffer)
+		buf.ReadFrom(resp.Body)
+		fmt.Printf("Response body: %s\n", buf.String())
 	},
 }
 
 func init() {
 
 	AiCmd.Flags().StringVarP(&prompt, "prompt", "p", "", "write prompt to search")
-	fmt.Printf(prompt)
+	fmt.Print(prompt)
 
 	// AiCmd.AddCommand(weatherCmd)
 	// Here you will define your flags and configuration settings.

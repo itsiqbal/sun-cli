@@ -10,7 +10,6 @@ import (
 	"github.com/itsiqbal/sun-cli/cmd/encrypt"
 	"github.com/itsiqbal/sun-cli/cmd/gcp"
 	"github.com/itsiqbal/sun-cli/cmd/info"
-	"github.com/itsiqbal/sun-cli/cmd/open"
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +39,6 @@ func Execute() {
 
 func addSubCommandPallets() {
 	rootCmd.AddCommand(info.InfoCmd)
-	rootCmd.AddCommand(open.OpenCmd)
 	rootCmd.AddCommand(ai.AiCmd)
 	rootCmd.AddCommand(encrypt.EncryptCmd)
 	rootCmd.AddCommand(gcp.GcpCmd)

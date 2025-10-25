@@ -314,8 +314,8 @@ func selectProject(filter string) (*Project, error) {
 
 	searcher := func(input string, index int) bool {
 		project := projectNames[index]
-		name := strings.Replace(strings.ToLower(project), " ", "", -1)
-		input = strings.Replace(strings.ToLower(input), " ", "", -1)
+		name := strings.ReplaceAll(strings.ToLower(project), " ", "")
+		input = strings.ReplaceAll(strings.ToLower(input), " ", "")
 
 		// Fuzzy search: check if all characters in input appear in order
 		if input == "" {
@@ -483,8 +483,8 @@ func selectService(filter string) (*Service, error) {
 		}
 
 		service := serviceOptions[index]
-		name := strings.Replace(strings.ToLower(service), " ", "", -1)
-		input = strings.Replace(strings.ToLower(input), " ", "", -1)
+		name := strings.ReplaceAll(strings.ToLower(service), " ", "")
+		input = strings.ReplaceAll(strings.ToLower(input), " ", "")
 
 		// Fuzzy search: check if all characters in input appear in order
 		if input == "" {
