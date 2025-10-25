@@ -87,7 +87,9 @@ changelog:
 # Release configuration
 release:
   github:
-  name_template: 'v{{ .Version }}'
+    owner: itsiqbal
+    name: sun-cli
+  name_template: "v{{ .Version }}"
   prerelease: auto
   draft: false
   make_latest: true
