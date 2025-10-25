@@ -12,9 +12,16 @@ builds:
       - CGO_ENABLED=0
     goos:
       - darwin
+      - linux
+      - windows
     goarch:
       - amd64
       - arm64
+      - '386'
+    # Exclude some combinations
+    ignore:
+      - goos: darwin
+        goarch: '386'
     ldflags:
       - -s -w
       - -X main.version={{.Version}}
@@ -31,69 +38,25 @@ builds:
 archives:
   - id: sun-archive
     name_template: >-
-      {{ .ProjectName }}-
-      {{- .Version }}-
-      {{- .Os }}-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- .Os }}_
       {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
     format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
     files:
       - README.md
       - LICENSE*
 
-# Create standalone binaries for easy install script usage
-release:
-  github:
-    owner: '{{ .Env.GITHUB_REPOSITORY_OWNER }}'
-    name: '{{ .ProjectName }}'
-  name_template: '{{ .Version }}'
-  prerelease: auto
-  draft: false
-  replace_existing_draft: true
-  make_latest: true
-  mode: append
-  header: |
-    ## Installation
-
-    ### macOS
-
-    Quick install using our script:
-    ```bash
-    curl -fsSL https://raw.githubusercontent.com/{{ .Env.GITHUB_REPOSITORY }}/main/install.sh | bash
-    ```
-
-    Or manually download for your architecture:
-    - **Apple Silicon (M1/M2/M3/M4)**: Download `sun-darwin-arm64`
-    - **Intel Mac**: Download `sun-darwin-amd64`
-
-    Then:
-    ```bash
-    chmod +x sun-darwin-*
-    sudo mv sun-darwin-* /usr/local/bin/sun
-    ```
-
-    ### Using Homebrew (coming soon)
-    ```bash
-    brew tap YOUR_USERNAME/tap
-    brew install sun
-    ```
-  footer: |
-    ## Changelog
-
-    See [CHANGELOG.md](https://github.com/{{ .Env.GITHUB_REPOSITORY }}/blob/main/CHANGELOG.md) for details.
-
-    ## Checksums
-
-    Verify your download:
-    ```bash
-    shasum -a 256 -c sun_{{ .Version }}_checksums.txt
-    ```
-  extra_files:
-    # Create simple binaries without archive wrapping
-    - glob: ./dist/sun_darwin_amd64_v1/sun
-      name_template: 'sun-darwin-amd64'
-    - glob: ./dist/sun_darwin_arm64/sun
-      name_template: 'sun-darwin-arm64'
+# Universal binary for macOS (combines Intel + Apple Silicon)
+universal_binaries:
+  - id: sun-universal
+    name_template: 'sun'
+    replace: false
 
 checksum:
   name_template: '{{ .ProjectName }}_{{ .Version }}_checksums.txt'
@@ -120,6 +83,97 @@ changelog:
       order: 2
     - title: Others
       order: 999
+
+# Release configuration
+release:
+  github:
+  name_template: 'v{{ .Version }}'
+  prerelease: auto
+  draft: false
+  make_latest: true
+
+  # Add standalone binaries as extra files
+  extra_files:
+    # macOS binaries
+    - glob: ./dist/sun_darwin_amd64_v1/sun
+      name_template: 'sun-darwin-amd64'
+    - glob: ./dist/sun_darwin_arm64/sun
+      name_template: 'sun-darwin-arm64'
+    - glob: ./dist/sun_darwin_all/sun
+      name_template: 'sun-darwin-universal'
+    # Linux binaries
+    - glob: ./dist/sun_linux_amd64_v1/sun
+      name_template: 'sun-linux-amd64'
+    - glob: ./dist/sun_linux_arm64/sun
+      name_template: 'sun-linux-arm64'
+    - glob: ./dist/sun_linux_386/sun
+      name_template: 'sun-linux-386'
+    # Windows binaries
+    - glob: ./dist/sun_windows_amd64_v1/sun.exe
+      name_template: 'sun-windows-amd64.exe'
+    - glob: ./dist/sun_windows_arm64/sun.exe
+      name_template: 'sun-windows-arm64.exe'
+    - glob: ./dist/sun_windows_386/sun.exe
+      name_template: 'sun-windows-386.exe'
+
+  header: |
+    ## Installation
+
+    ### Quick Install (macOS)
+
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/itsiqbal/sun-cli/main/install.sh | sudo bash
+    ```
+
+    ### Manual Installation
+
+    #### macOS
+    **Apple Silicon (M1/M2/M3/M4):**
+    ```bash
+    curl -L https://github.com/itsiqbal/sun-cli/releases/download/v{{ .Version }}/sun-darwin-arm64 -o /usr/local/bin/sun
+    chmod +x /usr/local/bin/sun
+    ```
+
+    **Intel Mac:**
+    ```bash
+    curl -L https://github.com/itsiqbal/sun-cli/releases/download/v{{ .Version }}/sun-darwin-amd64 -o /usr/local/bin/sun
+    chmod +x /usr/local/bin/sun
+    ```
+
+    **Universal (works on both):**
+    ```bash
+    curl -L https://github.com/itsiqbal/sun-cli/releases/download/v{{ .Version }}/sun-darwin-universal -o /usr/local/bin/sun
+    chmod +x /usr/local/bin/sun
+    ```
+
+    #### Linux
+    ```bash
+    # AMD64
+    curl -L https://github.com/itsiqbal/sun-cli/releases/download/v{{ .Version }}/sun-linux-amd64 -o /usr/local/bin/sun
+    chmod +x /usr/local/bin/sun
+
+    # ARM64
+    curl -L https://github.com/itsiqbal/sun-cli/releases/download/v{{ .Version }}/sun-linux-arm64 -o /usr/local/bin/sun
+    chmod +x /usr/local/bin/sun
+    ```
+
+    #### Windows
+    Download `sun-windows-amd64.exe` and add to your PATH.
+
+  footer: |
+    ## Verify Installation
+
+    ```bash
+    sun --version
+    sun --help
+    ```
+
+    ## Checksums
+
+    Verify your download:
+    ```bash
+    shasum -a 256 -c sun-cli_{{ .Version }}_checksums.txt
+    ```
 
 snapshot:
   name_template: '{{ incpatch .Version }}-next'
