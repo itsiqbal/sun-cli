@@ -3,8 +3,8 @@
 set -e
 
 # Configuration
-REPO="itsiqbal/sun-cli"  # Change this to your repo
-BINARY_NAME="sun-cli"
+REPO="YOUR_GITHUB_USERNAME/YOUR_REPO_NAME"  # Change this to your repo
+BINARY_NAME="sun"
 INSTALL_DIR="/usr/local/bin"
 
 # Colors for output
@@ -36,11 +36,8 @@ detect_platform() {
         darwin)
             OS="darwin"
             ;;
-        linux)
-            OS="linux"
-            ;;
         *)
-            error "Unsupported operating system: $OS"
+            error "This installer only supports macOS. OS detected: $OS"
             ;;
     esac
     
