@@ -4,7 +4,7 @@ set -e
 
 # Configuration
 REPO="itsiqbal/sun-cli"  # Change this to your repo
-BINARY_NAME="sun"
+BINARY_NAME="sun"  # Changed from sun-cli to sun
 INSTALL_DIR="/usr/local/bin"
 
 # Colors for output
@@ -58,9 +58,14 @@ detect_platform() {
 
 # Check if running with sudo/root for installation
 check_permissions() {
-    if [ ! -w "$INSTALL_DIR" ]; then
-        warn "Installation directory $INSTALL_DIR is not writable."
-        warn "You may need to run this script with sudo or choose a different directory."
+    # If not running with sudo and /usr/local/bin is not writable
+    if [ ! -w "$INSTALL_DIR" ] && [ "$EUID" -ne 0 ]; then
+        warn "Installation directory $INSTALL_DIR requires sudo privileges."
+        echo ""
+        info "You have two options:"
+        echo "  1. Run with sudo: curl -fsSL <url> | sudo bash"
+        echo "  2. Install to your user directory (no sudo needed)"
+        echo ""
         
         # Offer alternative installation location
         read -p "Install to ~/.local/bin instead? (y/n) " -n 1 -r
@@ -72,12 +77,28 @@ check_permissions() {
             
             # Check if in PATH
             if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
-                warn "Note: $INSTALL_DIR is not in your PATH."
-                warn "Add this to your shell profile (~/.bashrc, ~/.zshrc, etc.):"
-                echo "export PATH=\"\$PATH:$INSTALL_DIR\""
+                echo ""
+                warn "⚠️  $INSTALL_DIR is not in your PATH."
+                echo ""
+                info "Add this line to your shell profile:"
+                echo ""
+                echo "    export PATH=\"\$PATH:$INSTALL_DIR\""
+                echo ""
+                
+                # Detect shell and provide specific instructions
+                if [ -n "$ZSH_VERSION" ]; then
+                    echo "For zsh, add to ~/.zshrc:"
+                    echo "    echo 'export PATH=\"\$PATH:$INSTALL_DIR\"' >> ~/.zshrc"
+                    echo "    source ~/.zshrc"
+                elif [ -n "$BASH_VERSION" ]; then
+                    echo "For bash, add to ~/.bashrc or ~/.bash_profile:"
+                    echo "    echo 'export PATH=\"\$PATH:$INSTALL_DIR\"' >> ~/.bashrc"
+                    echo "    source ~/.bashrc"
+                fi
+                echo ""
             fi
         else
-            error "Installation cancelled. Please run with sudo or choose a different directory."
+            error "Installation cancelled. Please run with sudo: curl -fsSL <url> | sudo bash"
         fi
     fi
 }
