@@ -10,22 +10,44 @@ import (
 	"github.com/itsiqbal/sun-cli/cmd/encrypt"
 	"github.com/itsiqbal/sun-cli/cmd/gcp"
 	"github.com/itsiqbal/sun-cli/cmd/info"
+	"github.com/itsiqbal/sun-cli/cmd/version"
 	"github.com/spf13/cobra"
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "sun",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "Sun CLI - A powerful command-line tool for cloud service management",
+	Long: `Sun CLI is a comprehensive command-line interface designed to streamline 
+your cloud infrastructure and service management workflow.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+With Sun CLI, you can:
+  • Quickly open and manage GCP (Google Cloud Platform) services
+  • Navigate through cloud resources with ease
+  • List and explore directory structures efficiently
+  • Automate repetitive cloud operations
+  • Integrate with your existing DevOps workflows
+
+Sun CLI is built with performance and developer experience in mind, 
+providing fast execution, intuitive commands, and seamless integration 
+with modern cloud platforms.
+
+Examples:
+  # Open a GCP service in your browser
+  sun open compute
+
+  # List directory contents with details
+  sun list /path/to/directory
+
+  # View help for any command
+  sun [command] --help
+
+For more information and documentation, visit:
+  https://github.com/itsiqbal/sun-cli`,
+	Run: func(cmd *cobra.Command, args []string) {
+		// If no subcommand is provided, show help
+		_ = cmd.Help()
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -38,10 +60,12 @@ func Execute() {
 }
 
 func addSubCommandPallets() {
+	rootCmd.AddCommand(version.VersionCmd)
 	rootCmd.AddCommand(info.InfoCmd)
 	rootCmd.AddCommand(ai.AiCmd)
 	rootCmd.AddCommand(encrypt.EncryptCmd)
 	rootCmd.AddCommand(gcp.GcpCmd)
+
 }
 
 func init() {

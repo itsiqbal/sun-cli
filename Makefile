@@ -1,5 +1,3 @@
-# Makefile for mycli - Optimized Go CLI build
-
 # Metadata
 APP_NAME := sun
 VERSION := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
