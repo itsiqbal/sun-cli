@@ -3,7 +3,7 @@
 set -e
 
 # Configuration
-REPO="YOUR_GITHUB_USERNAME/YOUR_REPO_NAME"  # Change this to your repo
+REPO="itsiqbal/sun-cli"  # Change this to your repo
 BINARY_NAME="sun"
 INSTALL_DIR="/usr/local/bin"
 
