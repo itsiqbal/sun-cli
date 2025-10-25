@@ -6,9 +6,10 @@ package ai
 import (
 	"bytes"
 	"fmt"
-	"github.com/spf13/cobra"
 	"net/http"
 	"time"
+
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -53,12 +54,14 @@ var AiCmd = &cobra.Command{
 			fmt.Println("Error making request:", err)
 			return
 		}
-		defer resp.Body.Close()
+		// defer resp.Body.Close()
 
 		// Read and print the response
 		fmt.Printf("Response status: %s\n", resp.Status)
 		buf := new(bytes.Buffer)
-		buf.ReadFrom(resp.Body)
+		if _, err := buf.ReadFrom(resp.Body); err != nil {
+			fmt.Printf("⚠️ Failed to read response body: %v\n", err)
+		}
 		fmt.Printf("Response body: %s\n", buf.String())
 	},
 }

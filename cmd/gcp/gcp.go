@@ -235,9 +235,10 @@ func runGcpCommand(cmd *cobra.Command, args []string) error {
 	for {
 		project, err = selectProject(projectFlag)
 		if err != nil {
-			return err
+			fmt.Println("❌ Error selecting project:", err)
+			continue // retry selection
 		}
-		break
+		break // success → exit loop
 	}
 
 	// Step 2: Select environment (with back to project)
@@ -751,7 +752,9 @@ func saveCache(project, env, service string) {
 		return
 	}
 
-	os.WriteFile(cacheFile, data, 0644)
+	if err := os.WriteFile(cacheFile, data, 0644); err != nil {
+		fmt.Printf("⚠️ Could not write cache file: %v\n", err)
+	}
 }
 
 // loadCache loads cached selection

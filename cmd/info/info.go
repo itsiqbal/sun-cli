@@ -4,6 +4,9 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package info
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/spf13/cobra"
 )
 
@@ -11,9 +14,12 @@ import (
 var InfoCmd = &cobra.Command{
 	Use:   "info",
 	Short: "A command pallet related to information",
-	Long: ``,
+	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
+		if err := cmd.Help(); err != nil {
+			fmt.Fprintf(os.Stderr, "Error showing help: %v\n", err)
+			os.Exit(1)
+		}
 	},
 }
 
