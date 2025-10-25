@@ -1,0 +1,150 @@
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+    - go mod download
+
+builds:
+  - id: sun-cli
+    binary: sun-cli
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    # Exclude Windows ARM64
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+    flags:
+      - -trimpath
+    tags:
+      - netgo
+      - osusergo
+
+archives:
+  - id: sun-cli-archive
+    name_template: >-
+      {{ .ProjectName }}-
+      {{- .Version }}-
+      {{- .Os }}-
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+      - LICENSE*
+      - CHANGELOG.md
+
+# Create standalone binaries for easy install script usage
+release:
+  github:
+    owner: '{{ .Env.GITHUB_REPOSITORY_OWNER }}'
+    name: '{{ .ProjectName }}'
+  name_template: '{{ .Version }}'
+  prerelease: auto
+  draft: false
+  replace_existing_draft: true
+  make_latest: true
+  mode: append
+  header: |
+    ## Installation
+
+    ### macOS
+
+    Quick install using our script:
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/{{ .Env.GITHUB_REPOSITORY }}/main/install.sh | bash
+    ```
+
+    Or manually download for your architecture:
+    - **Apple Silicon (M1/M2/M3)**: Download `sun-cli-darwin-arm64`
+    - **Intel Mac**: Download `sun-cli-darwin-amd64`
+
+    Then:
+    ```bash
+    chmod +x sun-cli-darwin-*
+    sudo mv sun-cli-darwin-* /usr/local/bin/sun-cli
+    ```
+
+    ### Linux
+    ```bash
+    # ARM64
+    curl -L https://github.com/{{ .Env.GITHUB_REPOSITORY }}/releases/latest/download/sun-cli-linux-arm64 -o sun-cli
+    # AMD64
+    curl -L https://github.com/{{ .Env.GITHUB_REPOSITORY }}/releases/latest/download/sun-cli-linux-amd64 -o sun-cli
+
+    chmod +x sun-cli
+    sudo mv sun-cli /usr/local/bin/
+    ```
+
+    ### Windows
+    Download `sun-cli-windows-amd64.exe` and add to your PATH.
+  footer: |
+    ## Changelog
+
+    See [CHANGELOG.md](https://github.com/{{ .Env.GITHUB_REPOSITORY }}/blob/main/CHANGELOG.md) for details.
+
+    ## Checksums
+
+    Verify your download:
+    ```bash
+    sha256sum -c sun-cli_{{ .Version }}_checksums.txt
+    ```
+  extra_files:
+    # Create simple binaries without archive wrapping
+    - glob: ./dist/sun-cli_darwin_amd64_v1/sun-cli
+      name_template: 'sun-cli-darwin-amd64'
+    - glob: ./dist/sun-cli_darwin_arm64/sun-cli
+      name_template: 'sun-cli-darwin-arm64'
+    - glob: ./dist/sun-cli_linux_amd64_v1/sun-cli
+      name_template: 'sun-cli-linux-amd64'
+    - glob: ./dist/sun-cli_linux_arm64/sun-cli
+      name_template: 'sun-cli-linux-arm64'
+    - glob: ./dist/sun-cli_windows_amd64_v1/sun-cli.exe
+      name_template: 'sun-cli-windows-amd64.exe'
+
+checksum:
+  name_template: '{{ .ProjectName }}_{{ .Version }}_checksums.txt'
+  algorithm: sha256
+
+changelog:
+  use: github
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+      - 'typo'
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 0
+    - title: Bug Fixes
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 1
+    - title: Performance Improvements
+      regexp: '^.*?perf(\([[:word:]]+\))??!?:.+$'
+      order: 2
+    - title: Others
+      order: 999
+
+snapshot:
+  name_template: '{{ incpatch .Version }}-next'
+
+metadata:
+  mod_timestamp: '{{ .CommitTimestamp }}'
