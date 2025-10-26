@@ -89,7 +89,7 @@ release:
   github:
     owner: itsiqbal
     name: sun-cli
-  name_template: "v{{ .Version }}"
+  name_template: 'v{{ .Version }}'
   prerelease: auto
   draft: false
   make_latest: true
@@ -174,7 +174,7 @@ release:
 
     Verify your download:
     ```bash
-    shasum -a 256 -c sun-cli_{{ .Version }}_checksums.txt
+    shasum -a 256 -c sun_{{ .Version }}_checksums.txt
     ```
 
 snapshot:

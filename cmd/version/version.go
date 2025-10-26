@@ -9,13 +9,26 @@ import (
 
 var (
 	// Version information - injected at build time via ldflags
-	// Build with: go build -ldflags="-X cmd.version=1.0.0"
 	version = "dev"
 	commit  = "none"
 	date    = "unknown"
 )
 
-// VersionCmd represents the info command
+// SetVersionInfo sets the version information from main package
+// This should be called from main.go with the ldflags values
+func SetVersionInfo(v, c, d string) {
+	if v != "" {
+		version = v
+	}
+	if c != "" {
+		commit = c
+	}
+	if d != "" {
+		date = d
+	}
+}
+
+// VersionCmd represents the version command
 var VersionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version information",
@@ -34,19 +47,6 @@ var VersionCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		printVersion()
 	},
-}
-
-func init() {
-	VersionCmd.Flags().BoolP("version", "v", false, "Print version information")
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// infoCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// infoCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // GetVersion returns the version string

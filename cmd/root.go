@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/itsiqbal/sun-cli/cmd/ai"
@@ -79,4 +80,12 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	addSubCommandPallets()
+
+	// Handle --version flag before command execution
+	rootCmd.PreRun = func(cmd *cobra.Command, args []string) {
+		if v, _ := cmd.Flags().GetBool("version"); v {
+			fmt.Printf("sun version %s\n", version.GetVersion())
+			os.Exit(0)
+		}
+	}
 }
